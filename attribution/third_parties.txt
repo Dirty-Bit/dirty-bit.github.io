@@ -1,6 +1,20 @@
-The Noun Project
-	
-	Html - Drishya - https://thenounproject.com/icon/962484/
-	Message In A Bottle - Andre Luiz Gollo - https://thenounproject.com/icon/332128/
-	Mountains - Ian Ransley - https://thenounproject.com/icon/1371070/
-	Paper Plane - David - https://thenounproject.com/icon/411579/
+Icons
+
+	Konpa
+
+		HTML5 - Konpa - http://konpa.github.io/devicon/
+
+	The Noun Project
+		
+		Cursor - Zaff Studio - https://thenounproject.com/icon/1283618/
+		Fast Forward - Bhuvan - https://thenounproject.com/icon/1376632/
+		Html - Drishya - https://thenounproject.com/icon/962484/
+		Message In A Bottle - Andre Luiz Gollo - https://thenounproject.com/icon/332128/
+		Mountains - Ian Ransley - https://thenounproject.com/icon/1371070/
+		Paper Plane - David - https://thenounproject.com/icon/411579/
+		
+		
+		
+	Top Vectors
+
+		Adobe Creative Suite - interactiveblend.com - http://www.topvectors.com/vector/adobe-creative-suite-vector-icons/

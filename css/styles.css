@@ -893,7 +893,7 @@ html.no-js #expand_collapse
 {
     width:100%;
     box-sizing:border-box;
-    padding:50px 50px 0;
+    padding:50px 50px;
 }
 
 #contact.submitted div.first_half
@@ -1044,7 +1044,7 @@ html.no-js #expand_collapse
 {
     display:none;
     flex-flow:row nowrap;
-    justify-content:space-between;
+    justify-content:center;
     align-items:center;
     position:fixed;
     bottom:0;
@@ -1076,7 +1076,7 @@ html.no-js #expand_collapse
 {
     display:flex;
     flex-flow:row nowrap;
-    justify-content:space-between;
+    justify-content:left;
 }
 
 #footer div.social_icons a.social_link
@@ -1194,6 +1194,11 @@ html.no-js .arrow_down
     #cover hgroup 
     {
         font-size:28px;
+    }
+
+    #footer
+    {
+        justify-content:space-between;
     }
 
     #footer div.text_links
@@ -1316,7 +1321,7 @@ html.no-js .arrow_down
     #contact div.second_half
     {
         width:50%;
-        padding:50px 0 0 0;
+        padding:50px 0;
     }
 }
 
@@ -1356,7 +1361,7 @@ html.no-js .arrow_down
         top:5px;
         bottom:5px;
         right:0;
-        left:unset;
+        left:auto;
         width:2px;
         height:100%;
     }

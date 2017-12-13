@@ -121,7 +121,7 @@
             return;
 
         // is this IE?
-        if (is_ie_or_edge())
+        if (is_ie_or_edge)
         {
             // we need to set the height for IE and edge
             // since min-height does not work properly
@@ -139,7 +139,7 @@
         use regular expression to test the user agent to detect IE or edge
         @returns: bool          => true if the browser is identifying as IE or edge
     */
-    var is_ie_or_edge = function()
+    var is_ie_or_edge = (function()
     {
         // get the user agent
         var user_agent = navigator.userAgent;
@@ -165,7 +165,7 @@
 
         // not ie, could not match on our regexes
         return false;
-    }
+    })();
 
     /*
         function to determine if we have a portrait or landscape
@@ -1413,7 +1413,7 @@
         // which is used to toggle between the overview and the detailed
         // version of the resume
         // if we are in IE or edge, we will polyfill
-        if (is_ie_or_edge())
+        if (is_ie_or_edge)
         {
             // need to polyfill here
 
@@ -1530,12 +1530,12 @@
             window.requestAnimationFrame(function()
             {
                 // update the footer, if we need to
-                // we will do this to start by checking the scrollY
+                // we will do this to start by checking the pageYOffset (alias for scrollY, supported by IE)
                 // and making sure that we have cleared the cover page
 
                 // we should also hide the footer if we have fully scrolled
                 // to ensure that the submit button can be clicked
-                if (window.scrollY >= 300 && document.body.scrollHeight - window.scrollY - browser_height > 150)
+                if (window.pageYOffset >= 300 && document.body.scrollHeight - window.pageYOffset - browser_height > 150)
                 {
                     // we should show the footer (flexbox)
                     footer.style.display = 'flex';

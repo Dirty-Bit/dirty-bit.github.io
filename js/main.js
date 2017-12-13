@@ -84,6 +84,25 @@
             }
         };
 
+        /*
+            polyfill the Number.isInteger extension function
+            which is available in chrome, ff, etc. but not IE
+            @param: value           => the value to test to see if it is an int or not
+            @returns: bool          => whether or not the value is an integer
+                                        true on int
+                                        false on anything that isn't an int, including NaN, null, strings, doubles, and infinity
+        */
+        this.is_integer = function(value)
+        {
+            // check to see if we have the native function
+            if (Number.isInteger)
+                return Number.isInteger(value);
+
+            // the native function is not available
+            // we have to figure this out for ourselves...
+            return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+        };
+
         // ** TODO **
         //  => Element.classList.add        (IE <10?)
         //  => Element.classList.remove     (IE <10?)
@@ -101,11 +120,52 @@
         if (section == null)
             return;
 
-        console.log(section, browser_height);
+        // is this IE?
+        if (is_ie_or_edge())
+        {
+            // we need to set the height for IE and edge
+            // since min-height does not work properly
+            // for our flexbox
+            section.style.height = browser_height + 'px';
 
-        // set the height of the section
-        section.style.height = browser_height + 'px';
+            // TODO: measure stuff, set the height to fill the data...
+        }
+
+        // set the height of the section (min-height, for non-IE)
+        section.style.minHeight = browser_height + 'px';
     };
+
+    /*
+        use regular expression to test the user agent to detect IE or edge
+        @returns: bool          => true if the browser is identifying as IE or edge
+    */
+    var is_ie_or_edge = function()
+    {
+        // get the user agent
+        var user_agent = navigator.userAgent;
+
+        // check for a match on these regexes
+        // that will match IE or edge
+        var regexes = [
+            /(?:ms|\()(ie)\s([\w\.]+)/i,                                        // Internet Explorer
+            /(trident).+rv[:\s]([\w\.]+).+like\sgecko/i,                        // IE11
+            /(edge)\/((\d+)?[\w\.]+)/i                                          // Microsoft Edge
+        ];
+
+        // check for matches
+        // by iterating on our regular expressions
+        for (var i = 0, ilen = regexes.length; i < ilen; i++)
+        {
+            // check for a match here
+            // the match will be either null (doesn't exist)
+            // or it will be an array (does exist)
+            if (regexes[i].exec(user_agent) != null)
+                return true;
+        }
+
+        // not ie, could not match on our regexes
+        return false;
+    }
 
     /*
         function to determine if we have a portrait or landscape
@@ -177,6 +237,30 @@
     };
 
     /*
+        function to determine if we should animate
+        @returns: Bool          => whether or not we should run the intro
+                                    true:   run the intro, we have the height and orientation required
+                                    false:  screen does not match our criteria
+    */
+    var should_animate = function()
+    {
+        // do we have the skip animation search
+        if (window.location && window.location.search == '?skip=1')
+            return false;
+
+        // are we in landscape or portrait?
+        if (!is_landscape(browser_width, browser_height))
+            return false;
+
+        // we are landscape, is our height greater than 600px?
+        if (browser_height < 600)
+            return false;
+
+        // okay, we can run the animation
+        return true;
+    };
+
+    /*
         function to run the intro section
         this will only show on browsers that are large
         enough to support it
@@ -193,8 +277,12 @@
 
             this will be called immediately when our screen does not support animation
             or after the animation has concluded
+
+            @param: watched_through     => whether or not the intro was completed or was skipped
+                                            true:   we watched the whole thing
+                                            false:  skipped or not started
         */
-        var finalize_intro = function()
+        var finalize_intro = function(watched_through)
         {
             // find all the sections
             var sections = document.getElementsByTagName('section');
@@ -223,7 +311,7 @@
         if (!show_intro_section)
         {
             // finalize the intro, which will show our sections
-            finalize_intro();
+            finalize_intro(false);
             return;
         }
 
@@ -1079,6 +1167,7 @@
         {
             // set a timeout here so we are async
             // and we can ensure that the skip button has its animation
+            //  (can't skip out on all the animations!)
             setTimeout(function()
             {
                 // attach handler
@@ -1112,7 +1201,7 @@
                 {
                     // finalize the animation
                     // and move to the cover page
-                    finalize_intro();
+                    finalize_intro(true);
                 });
             });
         });
@@ -1161,6 +1250,183 @@
 
         // initialize the summary section height
         set_section_height(summary_element);
+    };
+
+    /*
+        function to initialize the resume section
+        this will show a resume that has a brief and detailed view
+        as well as allowing for the download of the resume
+        in both styles
+    */
+    var resume_section = function()
+    {
+        // find the resume section
+        var resume_element = document.getElementById('resume');
+
+        // find the expand/collapse button
+        var expand_collapse_button = document.getElementById('expand_collapse');
+
+        // find the expand/collapse text element
+        var expand_collapse_text_element = expand_collapse_button.getElementsByClassName('control_button_text')[0];
+
+        // find the details tags, we will monitor these for open and closed
+        var detail_tags = resume_element.getElementsByTagName('details');
+
+        // hold the number of detail tags that are open
+        // this will start at 0, everything is collapsed
+        var open_tags = 0;
+
+        /*
+            determine if we have more open or closed detail elements
+            @returns: bool          => flag, whether or not there are more open than closed
+                                        true:   more are open
+                                        false:  more are closed
+        */
+        var more_details_are_open = function()
+        {
+            // how many tags are open?
+            // vs how many are closed?
+            //  => if we are above 50%, this will be 1
+            //  => if we are below 50%, this will be 0
+            return Math.round(open_tags / detail_tags.length) == 1;
+        };
+
+        /*
+            function to update the expand/collapse button text and class
+            so our user will know what will happen when clicking
+        */
+        var update_expand_collapse_button = function()
+        {
+            // are more open or closed
+            if (more_details_are_open())
+            {
+                // we want the button to close things
+                expand_collapse_button.classList.add('collapse_all');
+                cross_browser_funcs.set_text_content(expand_collapse_text_element, 'Collapse All');
+            }
+            else
+            {
+                // we want the button to open things
+                expand_collapse_button.classList.remove('collapse_all');
+                cross_browser_funcs.set_text_content(expand_collapse_text_element, 'Expand All');
+            }          
+        };
+
+        /*
+            function to handle clicks on the expand/collapse button
+            this will change the summary/details to open or closed
+            based on whichever is more required
+
+            e.g.:   if there are 2 open and 1 collapsed, it will collapse all
+                    if there are 3 closed, it will expand all
+
+            @param: e           => the event that caused this function to fire
+        */
+        var on_expand_collapse_button_click = function(e)
+        {
+            // stop this event, we don't want to bubble and we don't want to jump
+            e.stopPropagation();
+            e.preventDefault();
+            
+            // how many tags are open?
+            var more_are_open = more_details_are_open();
+
+            // iterate on the tags, we will need to set this to the opposite
+            // if more are open, we want them to now be closed
+            for (var i = 0, ilen = detail_tags.length; i < ilen; i++)
+            {
+                // are we opening or closing
+                if (!more_are_open)
+                {
+                    // we have more closed than open => open them
+
+                    // add the open attribute
+                    detail_tags[i].setAttribute('open', '');
+                }
+                else
+                {
+                    // we have more open than closed => close them
+
+                    // remove the open attribute
+                    detail_tags[i].removeAttribute('open');
+                }
+            }
+
+            // update the counter var
+            if (!more_are_open)
+            {
+                // they are open now
+                open_tags = detail_tags.length - 1;
+            }
+            else
+            {
+                // they are closed now
+                open_tags = 0;
+            }
+
+            // update the button
+            update_expand_collapse_button();
+        };
+
+        /*
+            function to run when we have toggled a details element
+            to open or closed
+            @param: e           => the event that caused the function to fire
+        */
+        var on_detail_toggle = function(e)
+        {
+            // we had a change in one of the details
+
+            // is this open or closed
+            // the open attribute will be empty string if it is open
+            // or null if it is closed
+            if (e.target.getAttribute('open') == null)
+            {
+                // null, we are closed
+                open_tags--;
+            }
+            else
+            {
+                // we are now open
+                open_tags++;
+            }
+
+            // make sure we haven't screwed up the count
+            if (open_tags < 0)
+                open_tags = 0;
+            else if (open_tags >= detail_tags.length)
+                open_tags = detail_tags.length - 1;
+
+            // update the button
+            update_expand_collapse_button();
+        };
+
+        // attach handler to the expand collapse button
+        expand_collapse_button.addEventListener('click', on_expand_collapse_button_click);
+
+        // attach the toggle handler to all detail tags
+        for (var i = 0, ilen = detail_tags.length; i < ilen; i++)
+            detail_tags[i].addEventListener('toggle', on_detail_toggle);
+        
+        // IE and edge do not have details/summary elements 
+        // that were added in HTML5
+        // which is used to toggle between the overview and the detailed
+        // version of the resume
+        // if we are in IE or edge, we will polyfill
+        if (is_ie_or_edge())
+        {
+            // need to polyfill here
+
+            // add the details-element-polyfill.js script
+            var polyfill_script = document.createElement('script');
+            polyfill_script.src = 'js/details-element-polyfill.js';
+            polyfill_script.type = 'text/javascript';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(polyfill_script, s);
+        }
+
+        // initialize the resume section height
+        set_section_height(resume_element);
     };
 
     /*
@@ -1245,26 +1511,6 @@
         browser_width = cross_browser_funcs.inner_width();
 
         /*
-            function to determine if we should animate
-            @returns: Bool          => whether or not we should run the intro
-                                        true:   run the intro, we have the height and orientation required
-                                        false:  screen does not match our criteria
-        */
-        var should_animate = function()
-        {
-            // are we in landscape or portrait?
-            if (!is_landscape(browser_width, browser_height))
-                return false;
-
-            // we are landscape, is our height greater than 600px?
-            if (browser_height < 600)
-                return false;
-
-            // okay, we can run the animation
-            return true;
-        };
-
-        /*
             function to run when we have observed scrolling
             this will be de-bounced via request animation frame
             and will show/hide the footer when appropriate
@@ -1314,8 +1560,33 @@
                         // we are in the viewport
                         // set the color correctly
 
-                        // build the correct class by reading the data tag on the element
-                        var correct_class = 'on_' + sections[i].getAttribute('data-bg');
+                        // read the class list on the section
+                        // we have a class for blue and gray
+                        var classlist = sections[i].classList;
+
+                        // hold a var for the correct class
+                        var correct_class = "on_";
+
+                        // iterate on the classes until we find the one that starts with "section_"
+                        // that will give us the color of the section
+                        for (var j = 0, jlen = classlist.length; j < jlen; j++)
+                        {
+                            // is check the index of to make sure this is the right class
+                            if (classlist[j].indexOf("section_") != 0)
+                                continue;
+
+                            // this is it
+                            // set this as the correct class
+                            correct_class += classlist[j].replace("section_", "");
+
+                            // we don't need to check any more classes
+                            break;
+                        }
+
+                        // are we still on the hero?
+                        // there is no background color to allow the image to show through
+                        if (correct_class == "on_")
+                            break;
 
                         // check to see if we need to make the change
                         // if we have the right class, then we can quit here
@@ -1367,6 +1638,9 @@
 
         // begin summary section
         summary_section();
+
+        // begin resume section
+        resume_section();
 
         // begin contact section
         contact_section();

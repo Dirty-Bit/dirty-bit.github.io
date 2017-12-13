@@ -49,6 +49,18 @@ html.no-js section
     display:flex;
 }
 
+section.section_blue
+{
+    background-color:#7396FF;
+    color:#fff;
+}
+
+section.section_gray
+{
+    background-color: #F5F5F5;
+    color: #333333;
+}
+
 #intro
 {
     display:none;
@@ -250,7 +262,8 @@ div.application_window div.application_window_controls div.application_minimize
     fill:#333;
 }
 
-div.application_window div.application_window_controls div.application_maximize
+div.application_window div.application_window_controls div.application_maximize,
+div.application_window div.application_window_controls div.application_close
 {
     fill:transparent;
     stroke:#333;
@@ -544,15 +557,13 @@ div.application_window div.application_view
     flex-flow:row nowrap;
     align-items:center;
     justify-content: center;
-    position:relative;
-    background-color:#F5F5F5;
-    color:#333333;    
+    position:relative;   
 }
 
 #summary div.summary_first_half
 {
     display:none;
-    padding-left: 100px;
+    padding: 50px 0 50px 100px;
     width: 50%;
 }
 
@@ -575,7 +586,7 @@ div.application_window div.application_view
     display:flex;
     flex-flow:column nowrap;
     width:100%;
-    padding:0 25px;
+    padding:50px 25px;
 }
 
 #summary div.summary_second_half div.summary_item
@@ -614,9 +625,263 @@ div.application_window div.application_view
     color:#7396FF;
 }
 
+#resume div.resume_holder
+{
+    background:#fff;
+    margin:25px 25px;
+    padding:0 25px 50px;
+    display:flex;
+    flex-flow:column nowrap;
+    color:#333;
+    width:100%;
+    box-shadow:
+        0 -1px 1px rgba(0,0,0,0.15),
+        0 -10px 0 -5px #eee,
+        0 -10px 1px -4px rgba(0,0,0,0.15),
+        0 -20px 0 -10px #eee,
+        0 -20px 1px -9px rgba(0,0,0,0.15);
+}
+
+#resume div.resume_controls
+{
+    padding:25px 0;
+    display:flex;
+    justify-content:flex-end;
+    flex-flow:row nowrap;
+}
+
+html.no-js #expand_collapse
+{
+    display:none;
+}
+
+#resume a.resume_control_button
+{
+    display:flex;
+    flex-flow:row nowrap;
+    padding:5px 10px;
+    border:2px solid #333;
+    text-decoration:none;
+    color:#333;
+    height:16px;
+    cursor:pointer;
+    -webkit-transition: background-color 170ms ease-in-out;
+    -moz-transition: background-color 170ms ease-in-out;
+    -ms-transition: background-color 170ms ease-in-out;
+    -o-transition: background-color 170ms ease-in-out;
+    transition: background-color 170ms ease-in-out;
+}
+
+#resume a.resume_control_button:hover
+{
+    background-color:#333;
+    color:#fff;
+}
+
+#resume a.resume_control_button:hover svg
+{
+    fill:#fff;
+}
+
+#resume a.resume_control_button div.control_button_text
+{
+    font-size:12px;
+    line-height:16px;
+    padding-right:5px;
+}
+
+#resume a.resume_control_button div.control_icon_holder
+{
+    height:16px;
+    width:16px;
+    position:relative;
+}
+
+#resume a.resume_control_button svg
+{
+    height:100%;
+    width:100%;
+    fill:#333;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+
+#resume #expand_collapse.collapse_all.resume_control_button svg
+{
+    transform: rotate(270deg) translate(0, 0);
+}
+
+#expand_collapse
+{
+    margin-right:15px;
+}
+
+#resume div.resume_holder div.resume_top,
+#resume div.resume_holder div.resume_bottom
+{
+    display:flex;
+    flex-flow:column nowrap;
+    position:relative;
+}
+
+#resume div.resume_holder div.resume_top
+{
+    padding-bottom:25px;
+}
+
+#resume div.resume_holder div.resume_bottom
+{
+    padding-top:25px;
+}
+
+#resume div.resume_holder div.resume_left
+{
+    width:100%;
+    position:relative;
+    box-sizing:border-box;
+}
+
+#resume div.resume_holder div.resume_right
+{
+    width:100%;
+    box-sizing:border-box;
+}
+
+#resume div.resume_holder div.resume_bottom div.resume_left
+{
+    padding-bottom:25px;
+}
+
+#resume div.resume_holder div.resume_bottom div.resume_right
+{
+    padding-top:25px;
+}
+
+#resume div.resume_holder div.resume_top:after,
+#resume div.resume_holder div.resume_bottom div.resume_left:after
+{
+    left:0;
+    right:0;
+    bottom:0;
+    height:2px;
+}
+
+#resume div.resume_holder div.resume_top:after,
+#resume div.resume_holder div.resume_left:after
+{
+    content:'';
+    position:absolute;
+    background-color:#988f8f;
+}
+
+#resume div.resume_holder div.resume_top div.resume_right
+{
+    display:flex;
+    flex-flow:column nowrap;
+    justify-content:space-between;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#resume div.resume_holder div.resume_top div.resume_right div
+{
+    line-height:18px;
+}
+
+#resume div.resume_holder div.resume_top div.resume_right a
+{
+    color:#7396FF;
+    text-decoration:none;
+}
+
+#resume div.resume_top div.resume_header
+{
+    font-size:24px;
+    line-height:32px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+}
+
+#resume div.resume_sub_header
+{
+    font-size:16px;
+    line-height:24px;
+}
+
+#resume div.resume_bottom div.resume_header
+{
+    font-size:18px;
+    line-height:24px;
+    margin:10px 0;
+    color: #7396FF;
+}
+
+#resume div.resume_bottom div.resume_header
+{
+    margin: 10px 0 5px;
+}
+
+#resume div.resume_bottom div.resume_item_group
+{
+    margin-top:30px;
+}
+
+#resume div.resume_bottom div.resume_item_group:first-child
+{
+    margin-top:0;
+}
+
+#resume div.resume_bottom div.resume_left details,
+#resume div.resume_bottom div.resume_left summary
+{
+    margin-top:25px;
+    outline:0;
+}
+
+#resume div.resume_bottom div.resume_left summary::-webkit-details-marker
+{
+    display:none;
+}
+
+#resume div.resume_bottom div.resume_left summary::before {
+  content: '\25B6';
+  width:20px;
+  margin-left:-20px;
+  display:inline-block;
+}
+
+#resume div.resume_bottom div.resume_left details[open] > summary::before {
+  content: '\25BC';
+}
+
+#resume div.resume_bottom span.position_title
+{
+    text-transform:uppercase;
+    font-size:14px;
+    line-height:24px;
+    font-weight:600;
+}
+
+#resume div.resume_bottom span.position_years
+{
+    margin-left:25px;
+}
+
+#resume div.resume_bottom div.resume_left details:first-child
+{
+    margin-top:0;
+}
+
+#resume div.resume_bottom div.resume_left a
+{
+    color:#333;
+}
+
 #contact
 {
-    background-color:#7396FF;
     justify-content:center;
     flex-flow:column nowrap;
     align-items:center;
@@ -628,7 +893,7 @@ div.application_window div.application_view
 {
     width:100%;
     box-sizing:border-box;
-    padding:0 50px;
+    padding:50px 50px 0;
 }
 
 #contact.submitted div.first_half
@@ -639,11 +904,6 @@ div.application_window div.application_view
 #contact.submitted div.second_half
 {
     width:auto;
-}
-
-#contact div.first_half
-{
-    margin-bottom:40px;
 }
 
 #contact p.contact_large
@@ -751,7 +1011,7 @@ div.application_window div.application_view
 {
     background-color:transparent;
     width:120px;
-    border:3px solid #fff;
+    border:2px solid #595959;
     text-transform: uppercase;
     font-size: 1em;
     line-height: 2;
@@ -764,8 +1024,8 @@ div.application_window div.application_view
 
 #contact .contact_submit:hover
 {
-    background-color:#fff;
-    color:#7396FF;
+    background-color:#595959;
+    color:#fff;
 }
 
 #contact label
@@ -888,7 +1148,7 @@ html.no-js .arrow_down
     margin:-10% 0 0 -10%;
 }
 
-@media all and (min-width:25em) and (orientation: portrait)
+@media all and (min-width:30em) and (orientation: portrait)
 {
     #cover hgroup 
     {
@@ -944,6 +1204,12 @@ html.no-js .arrow_down
 
 @media all and (min-width:36em) and (orientation: landscape)
 {
+    #resume div.resume_holder
+    {
+        margin: 25px 50px;
+        padding: 0 50px 50px;
+    }
+
     #footer
     {
         font-size:14px;
@@ -994,7 +1260,7 @@ html.no-js .arrow_down
     #summary div.summary_second_half
     {
         width:50%;
-        padding:0;
+        padding:50px 0;
     }
 }
 
@@ -1040,11 +1306,17 @@ html.no-js .arrow_down
         line-height:24px;
     }
 
+    #resume div.resume_holder
+    {
+        margin: 25px 150px;
+        padding: 0 50px 50px;
+    }
+
     #contact div.first_half,
     #contact div.second_half
     {
         width:50%;
-        padding:0;
+        padding:50px 0 0 0;
     }
 }
 
@@ -1059,6 +1331,89 @@ html.no-js .arrow_down
     {
         display: block;
     }
+
+    #resume div.resume_holder
+    {
+        margin: 50px 300px;
+        padding: 0 50px 50px;
+    }
+
+    #resume div.resume_holder div.resume_top,
+    #resume div.resume_holder div.resume_bottom
+    {
+        flex-flow:row nowrap;
+    }
+
+    #resume div.resume_holder div.resume_left
+    {
+        width:67%;
+        padding-right:25px;
+    }
+
+    #resume div.resume_holder div.resume_left:after,
+    #resume div.resume_holder div.resume_bottom div.resume_left:after
+    {
+        top:5px;
+        bottom:5px;
+        right:0;
+        left:unset;
+        width:2px;
+        height:100%;
+    }
+
+    #resume div.resume_holder div.resume_bottom div.resume_left
+    {
+        padding-bottom:0;
+    }
+
+    #resume div.resume_holder div.resume_bottom div.resume_right
+    {
+        padding-top:0;
+    }
+
+    #resume div.resume_holder div.resume_right
+    {
+        width:33%;
+        box-sizing:border-box;
+        padding:0 0 0 25px;
+    }
+
+    #resume div.resume_top div.resume_header
+    {
+        font-size: 36px;
+        line-height: 48px;
+    }
+
+    #resume a.resume_control_button
+    {
+        height: 24px;
+    }
+
+    #resume a.resume_control_button div.control_button_text
+    {
+        font-size:16px;
+        line-height:24px;
+        padding-right:12px;
+    }
+
+    #resume a.resume_control_button div.control_icon_holder
+    {
+        height:24px;
+        width:24px;
+    }
+
+    #resume div.resume_top div.resume_header
+    {
+        font-size:36px;
+        line-height:48px;
+        margin-bottom:20px;
+    }
+
+    #resume div.resume_sub_header
+    {
+        font-size:24px;
+        line-height:32px;
+    }
 }
 
 @media all and (min-width:98em) and (orientation: landscape)
@@ -1071,6 +1426,11 @@ html.no-js .arrow_down
     div.application_window
     {
         width: 50%;
+    }
+    #resume div.resume_top div.resume_header
+    {
+        font-size: 48px;
+        line-height: 64px;
     }
 }
 
